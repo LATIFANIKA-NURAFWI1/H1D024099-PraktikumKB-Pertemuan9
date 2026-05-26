@@ -1,21 +1,34 @@
 # Algoritma Genetika untuk Knapsack Problem
 
-> Praktikum Kecerdasan Buatan — Pertemuan 9
+> **Praktikum Kecerdasan Buatan – Pertemuan 9**  
+> Optimasi pemilihan barang menggunakan Algoritma Genetika
 
 ---
 
-## Deskripsi
+## Identitas Praktikan
 
-**Knapsack Problem** adalah masalah optimasi klasik: diberikan sejumlah barang yang masing-masing memiliki **nilai** dan **bobot**, tentukan kombinasi barang yang menghasilkan **total nilai maksimum** tanpa melebihi **kapasitas tas**.
+| Nama      | [Nama Lengkap]           |
+| ----------| ------------------------ |
+| **Nama**  | [Latifani kaNurafwi]     |
+| **NIM**   | [H1D024099]              |
 
-**Algoritma Genetika (AG)** menyelesaikan masalah ini dengan meniru proses evolusi biologis:
+---
 
-1. **Inisialisasi** — Bangkitkan populasi awal berupa kromosom biner acak.  
-2. **Evaluasi** — Hitung nilai fitness setiap individu (total nilai barang, atau 0 jika melebihi kapasitas).  
-3. **Seleksi** — Pilih dua parent menggunakan *Roulette Wheel Selection*.  
-4. **Crossover** — Gabungkan gen kedua parent untuk menghasilkan dua anak baru (*One-Point Crossover*).  
-5. **Mutasi** — Ubah gen secara acak untuk menjaga keberagaman (*Swap Mutation*).  
-6. **Generasi Baru** — Ganti populasi lama dengan populasi baru dan ulangi.
+## Deskripsi Program
+
+Program ini menyelesaikan **Knapsack Problem** (masalah memilih barang dengan keuntungan maksimal dalam kapasitas terbatas) menggunakan **Algoritma Genetika (AG)**.
+
+Data yang digunakan terdiri dari **9 barang** dengan nilai dan bobot tertentu. Kapasitas maksimum tas adalah **50**.
+
+Algoritma Genetika bekerja dengan prinsip evolusi:
+1. **Inisialisasi** – membangkitkan populasi awal (kromosom biner acak).
+2. **Evaluasi** – menghitung fitness = total nilai barang yang dipilih (0 jika melebihi kapasitas).
+3. **Seleksi** – memilih parent menggunakan *Roulette Wheel Selection*.
+4. **Crossover** – menggabungkan gen dua parent (*One‑Point Crossover*).
+5. **Mutasi** – mengubah gen secara acak (*Swap Mutation*).
+6. **Generasi baru** – mengulangi hingga generasi maksimum.
+
+Program ini **modular** – setiap komponen GA dipisah ke file sendiri untuk memudahkan pembelajaran.
 
 ---
 
@@ -24,42 +37,68 @@
 ```
 NIM-PraktikumKB-Pertemuan9/
 │
-├── ga_knapsack.py   # Satu file utama berisi semua fungsi + main
-└── README.md
+├── InisiasiPopulasi.py      # Membangkitkan populasi awal
+├── EvaluasiFitness.py       # Data barang & fungsi fitness
+├── selection.py             # Roulette Wheel & Tournament Selection
+├── crossover.py             # One-Point, Two-Point, Uniform Crossover
+├── mutation.py              # Swap, Inversion, Uniform Mutation
+├── ga_knapsack.py           # Versi semua fungsi dalam satu file (opsional)
+├── main.py                  # File utama (impor modul-modul di atas)
+└── README.md                # File ini
 ```
+
+> **Catatan:** `main.py` mengimpor fungsi dari file-file modular. `ga_knapsack.py` adalah alternatif jika ingin semua kode dalam satu file.
 
 ---
 
-## Library yang Diperlukan
+## Instalasi & Persiapan
 
-| Library      | Kegunaan                              |
-|--------------|---------------------------------------|
-| `matplotlib` | Menampilkan grafik perkembangan fitness |
-| `random`     | Pembangkitan bilangan acak (built-in) |
+### 1. Pastikan Python terinstal (versi 3.7+)
+```bash
+python --version
+```
 
-Instalasi library eksternal:
-
+### 2. Install library yang diperlukan
+Hanya **matplotlib** yang perlu diinstal (random, numpy sudah bawaan):
 ```bash
 pip install matplotlib
 ```
 
+### 3. Letakkan semua file dalam satu folder
+Pastikan file-file berikut ada:
+- `InisiasiPopulasi.py`
+- `EvaluasiFitness.py`
+- `selection.py`
+- `crossover.py`
+- `mutation.py`
+- `main.py`
+
 ---
 
-## Cara Menjalankan Program
+## Cara Menjalankan
+
+Buka terminal di folder tersebut, lalu jalankan:
+
+```bash
+python main.py
+```
+
+Atau jika ingin versi satu file:
 
 ```bash
 python ga_knapsack.py
 ```
 
-Program akan menampilkan:
-- Progress fitness per generasi di terminal.
-- Grafik perkembangan fitness setelah semua generasi selesai.
-- Hasil akhir: nilai fitness terbaik, total bobot, dan daftar barang terpilih.
+Program akan:
+- Menampilkan **progress fitness** setiap generasi di terminal.
+- Setelah selesai, menampilkan **grafik perkembangan fitness** (tertinggi, rata-rata, terendah, dan titik semua individu).
+- Menampilkan **hasil akhir**: total keuntungan terbaik, total bobot, dan daftar barang terpilih.
 
 ---
 
-## Data Barang
+## Data Barang & Parameter
 
+### Data Barang (9 item)
 | Barang   | Nilai | Bobot |
 |----------|-------|-------|
 | Barang1  | 60    | 10    |
@@ -72,91 +111,93 @@ Program akan menampilkan:
 | Barang8  | 90    | 10    |
 | Barang9  | 25    | 3     |
 
-**Kapasitas Tas:** 50
+**Kapasitas tas:** 50
+
+### Parameter Algoritma Genetika (di `main.py`)
+| Parameter          | Nilai | Keterangan                          |
+| ------------------ | ----- | ----------------------------------- |
+| Jumlah generasi    | 50    | Iterasi evolusi                     |
+| Jumlah populasi    | 20    | Banyak individu per generasi        |
+| Probabilitas crossover | 0.5  | 50% pasangan parent melakukan crossover |
+| Probabilitas mutasi | 0.1  | 10% anak mengalami mutasi           |
+
+> Parameter dapat diubah di dalam fungsi `run_ga()` di `main.py` atau `ga_knapsack.py`.
 
 ---
 
-## Parameter Algoritma Genetika
+## Penjelasan Kode Modular
 
-| Parameter          | Nilai  | Penjelasan                                               |
-|--------------------|--------|----------------------------------------------------------|
-| `jumlah_generasi`  | 50     | Jumlah iterasi evolusi                                   |
-| `jumlah_populasi`  | 20     | Jumlah individu (kromosom) per generasi                  |
-| `prob_crossover`   | 0.5    | Probabilitas 50% crossover terjadi pada sepasang parent  |
-| `prob_mutasi`      | 0.1    | Probabilitas 10% mutasi terjadi pada setiap anak         |
-| `kapasitas_tas`    | 50     | Batas bobot maksimum tas                                 |
+### 1. `InisiasiPopulasi.py`
+- Fungsi `inisialisasi_populasi(jumlah_populasi, jumlah_gen)`
+- Membangkitkan populasi awal berupa kromosom biner acak (0/1) sepanjang `jumlah_gen`.
 
----
+### 2. `EvaluasiFitness.py`
+- Data barang (nama, nilai, bobot) dan kapasitas tas.
+- Fungsi `hitung_fitness(kromosom, barang, kapasitas)`  
+  → mengembalikan total nilai jika total bobot ≤ kapasitas, selain itu 0 (penalti).
 
-## Fungsi-Fungsi Utama
+### 3. `selection.py`
+- `roulette_wheel_selection(populasi, fitness_populasi)` – pilih parent berdasarkan probabilitas proporsional terhadap fitness.
+- `tournament_selection(populasi, fitness_populasi, k=3)` – pilih k acak, ambil yang fitness tertinggi.
+- **Catatan:** `main.py` hanya menggunakan Roulette Wheel.
 
-| Fungsi | Deskripsi |
-|--------|-----------|
-| `inisialisasi_populasi(n, g)` | Bangkitkan `n` kromosom biner acak sepanjang `g` gen |
-| `hitung_fitness(kromosom, barang, kapasitas)` | Hitung total nilai; kembalikan 0 jika bobot melebihi kapasitas |
-| `roulette_wheel_selection(pop, fit)` | Pilih satu individu secara probabilistik proporsional terhadap fitness |
-| `tournament_selection(pop, fit, k=3)` | Pilih `k` individu acak, ambil yang fitness tertinggi |
-| `one_point_crossover(p1, p2)` | Crossover satu titik potong, hasilkan dua anak |
-| `two_point_crossover(p1, p2)` | Crossover dua titik potong |
-| `uniform_crossover(p1, p2)` | Crossover berbasis mask acak |
-| `swap_mutation(kromosom)` | Tukar dua gen acak dalam kromosom |
-| `inversion_mutation(kromosom)` | Balik segmen gen acak |
-| `uniform_mutation(kromosom, rate)` | Flip setiap gen dengan probabilitas `rate` |
-| `run_ga(...)` | Fungsi utama yang menjalankan seluruh proses AG |
+### 4. `crossover.py`
+- `one_point_crossover(p1, p2)` – satu titik potong.
+- `two_point_crossover(p1, p2)` – dua titik potong.
+- `uniform_crossover(p1, p2)` – setiap gen dipilih acak dari salah satu parent.
+- **Catatan:** `main.py` hanya menggunakan One‑Point.
+
+### 5. `mutation.py`
+- `swap_mutation(kromosom)` – tukar dua gen acak.
+- `inversion_mutation(kromosom)` – balik urutan gen pada segmen acak.
+- `uniform_mutation(kromosom, rate=0.1)` – flip setiap gen dengan probabilitas rate.
+- **Catatan:** `main.py` hanya menggunakan Swap Mutation.
+
+### 6. `main.py`
+- Mengimpor semua fungsi di atas.
+- Menjalankan GA dengan parameter yang ditentukan.
+- Mencatat statistik setiap generasi.
+- Menampilkan grafik dan hasil akhir.
 
 ---
 
 ## Contoh Output
 
-### Terminal
+### Hasil akhir (contoh)
 ```
-Generasi   1 | Terbaik:  219 | Rata-rata:   30.45 | Terburuk:    0
-Generasi   2 | Terbaik:  300 | Rata-rata:  205.65 | Terburuk:   90
-...
-Generasi  50 | Terbaik:  334 | Rata-rata:  284.80 | Terburuk:    0
-
 =============================================
-  Nilai Fitness Terbaik : 334
-  Total Bobot           : 48
-  Barang Terpilih       :
-    - Barang5
-    - Barang6
-    - Barang7
-    - Barang8
-    - Barang9
+Nilai Fitness:
+Individu 1: Fitness = 0
+Individu 2: Fitness = 190
+Individu 3: Fitness = 230
+
+Parent Terpilih:
+Parent 1: individu3
+Parent 2: individu4
+
+Anak Hasil Crossover:
+Anak 1: [1, 0, 1, 0, 1]
+Anak 2: [0, 1, 0, 1, 0]
+
+Anak Setelah Mutasi:
+Anak 1 (Swap Mutation): [0, 1, 1, 0, 1]
+Anak 2 (Inversion Mutation): [0, 1, 1, 0, 1]
+Anak 3 (Uniform Mutation): [0, 1, 1, 0, 1]
+Nilai Fitness Terbaik: 329
+Total Bobot: 50
+Barang Terpilih:
+- Barang2
+- Barang5
+- Barang6
+- Barang8
 =============================================
 ```
 
-### Grafik Perkembangan Fitness
-Grafik menampilkan 3 garis utama:
-- 🔵 **Biru** — Fitness tertinggi per generasi
-- 🔴 **Merah** — Fitness rata-rata per generasi
-- 🟡 **Kuning** — Fitness terendah per generasi
-- ⚪ **Abu-abu** (titik) — Nilai fitness semua individu per generasi
-
-> **Catatan:** Fluktuasi nilai yang acak menunjukkan sifat variatif AG yang tinggi — algoritma mengeksplorasi berbagai kemungkinan solusi di setiap generasi.
+### Grafik
+Grafik menampilkan:
+- **Garis biru** – fitness tertinggi per generasi.
+- **Garis merah** – fitness rata-rata.
+- **Garis kuning** – fitness terendah.
+- **Titik abu-abu** – semua nilai fitness individu per generasi (semakin gelap = semakin banyak individu dengan fitness serupa).
 
 ---
-
-## Cara Upload ke GitHub
-
-```bash
-# Inisialisasi repositori
-git init
-git add .
-git commit -m "Praktikum KB Pertemuan 9 - Algoritma Genetika Knapsack"
-
-# Hubungkan ke GitHub (ganti NIM dengan NIM Anda)
-git remote add origin https://github.com/username/NIM-PraktikumKB-Pertemuan9.git
-git branch -M main
-git push -u origin main
-```
-
-Nama repositori: **`NIM-PraktikumKB-Pertemuan9`**  
-Contoh: `123456789-PraktikumKB-Pertemuan9`
-
----
-
-## Catatan
-
-Program ini dibuat untuk memenuhi tugas **Praktikum Kecerdasan Buatan Pertemuan 9** dengan topik **Algoritma Genetika** pada studi kasus **Knapsack Problem**.
